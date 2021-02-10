@@ -30,7 +30,7 @@ classdef rrtstar
         eval_time_for_distance_internal;
 
         %termination conditions (per segment)
-        max_it = 5000;
+        max_it = 10000;
         max_time = 0;
 
         max_radius = 1000;
@@ -54,7 +54,7 @@ classdef rrtstar
             obj.x0 = sym('x0',[state_dims,1]);
             assume(obj.x0, 'real');
             obj.x1 = sym('x1',[state_dims,1]);
-            assume(sym(obj.x1, 'real');
+            assume(obj.x1, 'real');
 
             if ~exist('dist_idxs','var') || isempty(dist_idxs)
                 dist_idxs = 1:size(B,1);
@@ -134,7 +134,7 @@ classdef rrtstar
             %states = subs(s, obj.t_s, time);
 
             %c = subs(obj.control_eq, obj.x0, x0_);
-            %c = subs(c, obj.x1, x1_);
+            %c = subs(cstates, obj.x1, x1_);
             %inputs = subs(c, obj.t_s, time);
 
             in = num2cell([time, x0_', x1_']);
@@ -166,7 +166,7 @@ classdef rrtstar
             obj.max_time = time;
         end
 
-        function [path_states, closest_end_state] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, max_distance)
+        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, max_distance)
             T = [start];
             costs = [0];
             times = [0];
@@ -184,7 +184,7 @@ classdef rrtstar
 
             [cost, time] = evaluate_cost(obj, start, goal);
             [states, u] = evaluate_states_and_inputs(obj,start,goal,time);
-            if is_state_free(states,[0,time]) && is_input_free(u,[0,time])
+            if is_state_free(states,[0,time],0) && is_input_free(u,[0,time])
                 disp('goal is reachable from the start node (optimal solution)');
                 it_limit = 0;
                 goal_parent = 1;
@@ -193,7 +193,10 @@ classdef rrtstar
 
             display_scratch = -1;
             it = 0;
+            iteration_times =[];
+            iteration_costs =[];
             while it<it_limit && goal_time > obj.max_time
+                iteration_times = [it, cputime;iteration_times];
                 it = it+1;
                 disp(['iteration ',num2str(it), ' of ', num2str(it_limit), '(time:',num2str(goal_time),')']);
                 sample_ok = false;
@@ -217,7 +220,7 @@ classdef rrtstar
                         [cost, time] = evaluate_cost(obj, node,x_i);
                         if cost < obj.max_radius && costs(node_idx)+cost < min_cost && costs(node_idx)+cost < goal_cost
                             [states, u] = evaluate_states_and_inputs(obj,node,x_i,time);
-                            if  is_state_free(states,[0,time]) && is_input_free(u,[0,time])
+                            if  is_state_free(states,[0,time],times(node_idx)) && is_input_free(u,[0,time])
                                 sample_ok = true;
                                 min_idx = node_idx;
                                 min_cost = costs(node_idx)+cost;
@@ -267,7 +270,7 @@ classdef rrtstar
                     [cost, time] = evaluate_cost(obj, x_i,state);
                     if cost < obj.max_radius && costs(end)+cost < costs(node.index)
                         [states, u] = evaluate_states_and_inputs(obj,x_i,state,time);
-                        if is_state_free(states,[0,time]) && is_input_free(u,[0,time])
+                        if is_state_free(states,[0,time],times(node.index)) && is_input_free(u,[0,time])
 
                             old_cost = costs(node.index);
                             old_time = times(node.index);
@@ -293,7 +296,7 @@ classdef rrtstar
                 [cost, time] = evaluate_cost(obj, x_i, goal);
                 if costs(end)+cost < goal_cost
                     [states, u] = evaluate_states_and_inputs(obj, x_i,goal,time);
-                    if is_state_free(states,[0,time]) && is_input_free(u,[0,time])
+                    if is_state_free(states,[0,time],times(end)) && is_input_free(u,[0,time])
                         goal_cost = costs(end)+cost;
                         goal_time = times(end)+time;
                         goal_parent = it+1;
@@ -304,7 +307,7 @@ classdef rrtstar
 
                 obj.timings = [obj.timings, toc()];
                 display_scratch = display(display_scratch, obj, T, parents, goal, goal_cost, goal_parent);
-
+                iteration_costs = [it, goal_cost;iteration_costs];
                 if mod(length(obj.timings),50) == 1 && length(obj.timings) > 50
                    disp(['time for the last 50 iterations: ', num2str(sum(obj.timings(end-50:end))),' seconds']); 
                 end
@@ -327,7 +330,7 @@ classdef rrtstar
                 [s, ~] = evaluate_states_and_inputs(obj, src, goal, best_t);
                 closest_end_state = s(close_t);
             end
-
+            
         end
 
         function [path, time] = find_path(obj, sample_free_state, is_state_free, is_input_free, waypoints, display, max_distance)

@@ -1,4 +1,4 @@
-function [ ok ] = single_is_state_free( state, state_limits, obstacles, radius, time_range,dynamic_obstacles,base_time)
+function [ ok ] = double_is_state_free( state, state_limits, obstacles, radius, time_range,dynamic_obstacles,base_time)
 %IS_STATE_FREE returns true if the given state is valid
 % - state is the 10 dimensional state vector
 % - state_limits limits for the state variables
@@ -89,6 +89,10 @@ for ii=1:n_obs
         coll = true;
         return;
     end
+    
+    if(sum((s(1:3)-s(7:9)).^2) < radius^2)
+        coll = true;
+        retur
     
 end
             

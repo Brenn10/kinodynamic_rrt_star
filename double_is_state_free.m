@@ -1,4 +1,4 @@
-function [ ok ] = single_is_state_free( state, state_limits, obstacles, radius, time_range,dynamic_obstacles,base_time)
+function [ ok ] = double_is_state_free( state, state_limits, obstacles, radius, time_range,dynamic_obstacles,base_time)
 %IS_STATE_FREE returns true if the given state is valid
 % - state is the 10 dimensional state vector
 % - state_limits limits for the state variables
@@ -78,14 +78,20 @@ for ii=1:n_obs
     
     obs = obstacles(ii,:)';
     
-    if s(1)>obs(1) && s(1)<obs(1)+obs(4) && s(2)>obs(2) && s(2)<obs(2)+obs(5) && s(3)>obs(3) && s(3)<obs(3)+obs(6) 
+    if (s(1)>obs(1) && s(1)<obs(1)+obs(4) && s(2)>obs(2) && s(2)<obs(2)+obs(5) && s(3)>obs(3) && s(3)<obs(3)+obs(6)) || ...
+            (s(7)>obs(1) && s(7)<obs(1)+obs(4) && s(8)>obs(2) && s(8)<obs(2)+obs(5) && s(9)>obs(3) && s(9)<obs(3)+obs(6))
         coll = true;
         return;
     end
     
-    closest = min(max(s(1:3),obs(1:3)),obs(1:3)+obs(4:6));
-    d = s(1:3)-closest;
-    if sum(d.^2) < radius^2
+    d1 = s(1:3) - min(max(s(1:3),obs(1:3)),obs(1:3)+obs(4:6));
+    d2 = s(7:9) - min(max(s(7:9),obs(1:3)),obs(1:3)+obs(4:6));
+    if sum(d1.^2) < radius^2 || sum(d2.^2) < radius^2
+        coll = true;
+        return;
+    end
+    
+    if(sum((s(1:3)-s(7:9)).^2) < radius^2)
         coll = true;
         return;
     end

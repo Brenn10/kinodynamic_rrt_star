@@ -1,4 +1,4 @@
-function [ scratch ] = single_plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
+function [ scratch ] = double_plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
 %PLOT_GRAPH Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -54,18 +54,20 @@ if goal_cost < scratch.last_cost
     scratch.path_handles = [];
     
     p = goal_parent;
-    [h,path] = draw_trajectory(obj, tree(:,p), goal_state, 'green', 3);
+    [h1,h2,path] = draw_trajectory(obj, tree(:,p), goal_state, 'green', 3);
     full_path = path;
-    scratch.path_handles = [scratch.path_handles,h];
-    uistack(h, 'top')
+    scratch.path_handles = [scratch.path_handles,h1,h2];
+    uistack(h1, 'top')
+    uistack(h2,'top')
     c = p;
     p = parents(c);
     while p > 0
-        [h, path] = draw_trajectory(obj, tree(:,p), tree(:,c), 'green', 3);
+        [h1,h2, path] = draw_trajectory(obj, tree(:,p), tree(:,c), 'green', 3);
         full_path(:,1) = full_path(:,1) + path(end,1);
         full_path = [path;full_path];
-        scratch.path_handles = [scratch.path_handles,h];
-        uistack(h, 'top')
+        scratch.path_handles = [scratch.path_handles,h1,h2];
+        uistack(h1, 'top')
+        uistack(h2,'top')
         c = p;
         p = parents(c);
     end
@@ -89,28 +91,40 @@ function [] = plot_quad(a,b,c,d, color)
     fill3(p(:,1),p(:,2),p(:,3), zeros(4,1), 'FaceColor', [.8,.8,.8], 'EdgeColor', color);
 end
 
-function [h,path] = draw_trajectory(obj,x0,x1,color, thickness, old_handle)
+function [h1,h2,path] = draw_trajectory(obj,x0,x1,color, thickness, old_handle)
     path = [];
     t = obj.evaluate_arrival_time(x0,x1);
     [states, ~] = obj.evaluate_states_and_inputs(x0,x1);
-    X = [];
-    Y = [];
-    Z = [];
+    X1 = [];
+    Y1 = [];
+    Z1 = [];
+    X2 = [];
+    Y2 = [];
+    Z2 = [];
     for jj=[0:t/10:t,t]
         p = states(jj);
-        X = [X,p(1)];
-        Y = [Y,p(2)];
-        Z = [Z,p(3)];
+        X1 = [X1,p(1)];
+        Y1 = [Y1,p(2)];
+        Z1 = [Z1,p(3)];
+        
+        X2 = [X2,p(7)];
+        Y2 = [Y2,p(8)];
+        Z2 = [Z2,p(9)];
         path = [path;jj,p.'];
     end
     
     if exist('old_handle','var') && old_handle ~= -1
-        set(old_handle, 'XData', X);
-        set(old_handle, 'YData', Y);
-        set(old_handle, 'ZData', Z);
-        h = old_handle;
+        set(old_handle, 'XData', X1);
+        set(old_handle, 'YData', Y1);
+        set(old_handle, 'ZData', Z1);
+        h1 = old_handle;
+        set(old_handle, 'XData', X2);
+        set(old_handle, 'YData', Y2);
+        set(old_handle, 'ZData', Z2);
+        h2 = old_handle;
     else
-        h = line(X, Y, Z, 'Color', color, 'LineWidth', thickness);
+        h1 = line(X1, Y1, Z1, 'Color', color, 'LineWidth', thickness);
+        h2 = line(X2, Y2, Z2, 'Color', 'red', 'LineWidth', thickness);
     end
     
 end

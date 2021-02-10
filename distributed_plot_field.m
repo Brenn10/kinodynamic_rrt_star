@@ -1,4 +1,4 @@
-function [ scratch ] = single_plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
+function [ scratch ] = distributed_plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
 %PLOT_GRAPH Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -54,23 +54,19 @@ if goal_cost < scratch.last_cost
     scratch.path_handles = [];
     
     p = goal_parent;
-    [h,path] = draw_trajectory(obj, tree(:,p), goal_state, 'green', 3);
-    full_path = path;
+    h = draw_trajectory(obj, tree(:,p), goal_state, 'green', 3);
     scratch.path_handles = [scratch.path_handles,h];
     uistack(h, 'top')
     c = p;
     p = parents(c);
     while p > 0
-        [h, path] = draw_trajectory(obj, tree(:,p), tree(:,c), 'green', 3);
-        full_path(:,1) = full_path(:,1) + path(end,1);
-        full_path = [path;full_path];
+        h = draw_trajectory(obj, tree(:,p), tree(:,c), 'green', 3);
         scratch.path_handles = [scratch.path_handles,h];
         uistack(h, 'top')
         c = p;
         p = parents(c);
     end
     scratch.last_cost = goal_cost;
-    save('trajectory.mat','full_path');
 end
 
 set(0, 'CurrentFigure', scratch.figure_handle);
@@ -89,8 +85,8 @@ function [] = plot_quad(a,b,c,d, color)
     fill3(p(:,1),p(:,2),p(:,3), zeros(4,1), 'FaceColor', [.8,.8,.8], 'EdgeColor', color);
 end
 
-function [h,path] = draw_trajectory(obj,x0,x1,color, thickness, old_handle)
-    path = [];
+function [h] = draw_trajectory(obj,x0,x1,color, thickness, old_handle)
+
     t = obj.evaluate_arrival_time(x0,x1);
     [states, ~] = obj.evaluate_states_and_inputs(x0,x1);
     X = [];
@@ -101,7 +97,6 @@ function [h,path] = draw_trajectory(obj,x0,x1,color, thickness, old_handle)
         X = [X,p(1)];
         Y = [Y,p(2)];
         Z = [Z,p(3)];
-        path = [path;jj,p.'];
     end
     
     if exist('old_handle','var') && old_handle ~= -1

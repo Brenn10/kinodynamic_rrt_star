@@ -1,4 +1,4 @@
-function [ ok ] = single_is_state_free( state, state_limits, obstacles, radius, time_range,dynamic_obstacles,base_time)
+function [ ok ] = distributed_is_state_free( state, state_limits, obstacles, radius, time_range )
 %IS_STATE_FREE returns true if the given state is valid
 % - state is the 10 dimensional state vector
 % - state_limits limits for the state variables
@@ -17,15 +17,12 @@ if isa(state,'sym')
     s = eval(subs(state,r));
 
     for ii=1:size(state_limits, 1)
-        dyn_obs = dynamic_obstacles(r(ii)+base_time);
-        
-        curr_obstacles =[ obstacles;  dyn_obs];
         if sum(s(ii,:)<state_limits(ii, 1)) > 0 || sum(s(ii,:)>state_limits(ii, 2)) > 0
         %if ~isAlways(state(ii) >= state_limits(ii, 1)) || ~isAlways(state(ii) <= state_limits(ii, 2))
             ok = false;
             return;
         end
-        if collides(curr_obstacles, radius, s)
+        if collides(obstacles, radius, s)
             ok = false;
             return;
         end
@@ -37,24 +34,19 @@ elseif isa(state, 'function_handle')
 
     for jj=1:length(r)
         s = state(r(jj));
-        dyn_obs = dynamic_obstacles(r(jj)+base_time);
-        
-        curr_obstacles =[ obstacles;  dyn_obs];
-        
         for ii=1:size(state_limits, 1)
             if s(ii) < state_limits(ii, 1) || s(ii) > state_limits(ii, 2)
                 ok = false;
                 return;
             end
         end
-        if collides(curr_obstacles, radius, s)
+        if collides(obstacles, radius, s)
             ok = false;
             return;
         end
     end
 
 else
-
     for ii=1:size(state_limits, 1)
         if state(ii) < state_limits(ii, 1) || state(ii) > state_limits(ii, 2)
             ok = false;
