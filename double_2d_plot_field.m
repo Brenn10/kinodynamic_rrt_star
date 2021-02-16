@@ -1,4 +1,4 @@
-function [ scratch ] = distributed_plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
+function [ scratch ] = double_2d_plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
 %PLOT_GRAPH Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -34,14 +34,14 @@ end
 %hold on;
 scratch.trajectory_handles = [scratch.trajectory_handles, -1];
 scratch.last_parents = [scratch.last_parents, -1];
-if false
+if true
     idx = find(scratch.last_parents~=parents);
     for ii=1:length(idx)
         
         changed_idx = idx(ii);
         src = tree(:,parents(changed_idx));
         dst = tree(:,changed_idx);
-        draw_trajectory(obj, src, dst, 'blue', 1, scratch.trajectory_handles(changed_idx));
+        draw_trajectory(obj, src, dst, 'green','magenta', 1, scratch.trajectory_handles(changed_idx));
     end
     scratch.last_parents = parents;
 end
@@ -54,19 +54,25 @@ if goal_cost < scratch.last_cost
     scratch.path_handles = [];
     
     p = goal_parent;
-    h = draw_trajectory(obj, tree(:,p), goal_state, 'green', 3);
-    scratch.path_handles = [scratch.path_handles,h];
-    uistack(h, 'top')
+    [h1,h2,path] = draw_trajectory(obj, tree(:,p), goal_state, 'blue','red', 3);
+    full_path = path;
+    scratch.path_handles = [scratch.path_handles,h1,h2];
+    uistack(h1, 'top')
+    uistack(h2, 'top')
     c = p;
     p = parents(c);
     while p > 0
-        h = draw_trajectory(obj, tree(:,p), tree(:,c), 'green', 3);
-        scratch.path_handles = [scratch.path_handles,h];
-        uistack(h, 'top')
+        [h1,h2, path] = draw_trajectory(obj, tree(:,p), tree(:,c), 'blue','red', 3);
+        full_path(:,1) = full_path(:,1) + path(end,1);
+        full_path = [path;full_path];
+        scratch.path_handles = [scratch.path_handles,h1,h2];
+        uistack(h1, 'top')        
+        uistack(h2, 'top')
         c = p;
         p = parents(c);
     end
     scratch.last_cost = goal_cost;
+    save('trajectory.mat','full_path');
 end
 
 set(0, 'CurrentFigure', scratch.figure_handle);
@@ -85,27 +91,35 @@ function [] = plot_quad(a,b,c,d, color)
     fill3(p(:,1),p(:,2),p(:,3), zeros(4,1), 'FaceColor', [.8,.8,.8], 'EdgeColor', color);
 end
 
-function [h] = draw_trajectory(obj,x0,x1,color, thickness, old_handle)
-
+function [h1,h2,path] = draw_trajectory(obj,x0,x1,color1, color2, thickness, old_handle)
+    path = [];
     t = obj.evaluate_arrival_time(x0,x1);
     [states, ~] = obj.evaluate_states_and_inputs(x0,x1);
-    X = [];
-    Y = [];
-    Z = [];
+    X1 = [];
+    Y1 = [];
+    Z1 = [];
+    X2 = [];
+    Y2 = [];
+    Z2 = [];
     for jj=[0:t/10:t,t]
         p = states(jj);
-        X = [X,p(1)];
-        Y = [Y,p(2)];
-        Z = [Z,p(3)];
+        X1 = [X1,p(1)];
+        Y1 = [Y1,p(2)];
+        Z1 = [Z1,0];
+        X2 = [X2,p(5)];
+        Y2 = [Y2,p(6)];
+        Z2 = [Z2,0];
+        path = [path;jj,p.'];
     end
     
     if exist('old_handle','var') && old_handle ~= -1
-        set(old_handle, 'XData', X);
-        set(old_handle, 'YData', Y);
-        set(old_handle, 'ZData', Z);
-        h = old_handle;
+        set(old_handle, 'XData', X1);
+        set(old_handle, 'YData', Y1);
+        set(old_handle, 'ZData', Z1);
+        h1 = old_handle;
     else
-        h = line(X, Y, Z, 'Color', color, 'LineWidth', thickness);
+        h1 = line(X1, Y1, Z1, 'Color', color1, 'LineWidth', thickness);
+        h2 = line(X2, Y2, Z2, 'Color', color2, 'LineWidth', thickness);
     end
     
 end

@@ -166,7 +166,7 @@ classdef rrtstar
             obj.max_time = time;
         end
 
-        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, max_distance)
+        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)
             T = [start];
             costs = [0];
             times = [0];
@@ -180,7 +180,11 @@ classdef rrtstar
             goal_parent = 0;
             goal_time = inf;
 
-            it_limit = obj.max_it;
+            if exist('iterations','var')
+                it_limit = iterations;
+            else
+                it_limit = obj.max_it;
+            end
 
             [cost, time] = evaluate_cost(obj, start, goal);
             [states, u] = evaluate_states_and_inputs(obj,start,goal,time);
@@ -225,6 +229,7 @@ classdef rrtstar
                                 min_idx = node_idx;
                                 min_cost = costs(node_idx)+cost;
                                 min_time = times(node_idx)+time;
+                                
                                 continue;
                             end
                         end
