@@ -52,7 +52,6 @@ if goal_cost < scratch.last_cost
        delete(scratch.path_handles(ii)); 
     end
     scratch.path_handles = [];
-    
     p = goal_parent;
     [h1,h2,path] = draw_trajectory(obj, tree(:,p), goal_state, 'green','red', 3);
     full_path = path;
