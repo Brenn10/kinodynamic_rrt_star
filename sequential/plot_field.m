@@ -1,4 +1,4 @@
-function [ scratch ] = single_plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
+function [ scratch ] = plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
 %PLOT_GRAPH Summary of this function goes here
 %   Detailed explanation goes here
 
