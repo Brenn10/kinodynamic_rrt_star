@@ -15,6 +15,7 @@ if isa(state,'sym')
     r = [time_range(1):max_dist:time_range(2)];
 
     s = eval(subs(state,r));
+    disp(s)
 
     for ii=1:size(state_limits, 1)
         dyn_obs = dynamic_obstacles(r(ii)+base_time);
@@ -34,7 +35,6 @@ elseif isa(state, 'function_handle')
 
     %dt = time_range(2)-time_range(1);
     r = [time_range(1):max_dist:time_range(2)];
-
     for jj=1:length(r)
         s = state(r(jj));
         dyn_obs = dynamic_obstacles(r(jj)+base_time);
@@ -44,6 +44,7 @@ elseif isa(state, 'function_handle')
         for ii=1:size(state_limits, 1)
             if s(ii) < state_limits(ii, 1) || s(ii) > state_limits(ii, 2)
                 ok = false;
+                
                 return;
             end
         end

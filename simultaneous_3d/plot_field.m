@@ -1,7 +1,6 @@
 function [ scratch ] = plot_field(scratch, obj, tree, parents, obstacles, goal_state, goal_cost, goal_parent )
 %PLOT_GRAPH Summary of this function goes here
 %   Detailed explanation goes here
-
 if ~isa(scratch,'struct') 
     %plot obstacles and waypoints    
     hold on;
@@ -47,7 +46,9 @@ if true
 end
 
 if goal_cost < scratch.last_cost
-    
+    if(false)
+        disp("new solution found")
+    end
     for ii=1:length(scratch.path_handles)
        delete(scratch.path_handles(ii)); 
     end
@@ -62,8 +63,8 @@ if goal_cost < scratch.last_cost
     p = parents(c);
     while p > 0
         [h1,h2, path] = draw_trajectory(obj, tree(:,p), tree(:,c), 'green','red', 3);
-        full_path(:,1) = full_path(:,1) + path(end,1);
-        full_path = [path;full_path];
+        full_path(:,1) = full_path(:,1) + path(1,1);
+        full_path = [full_path;path];
         scratch.path_handles = [scratch.path_handles,h1,h2];
         uistack(h1, 'top')
         uistack(h2, 'top')
@@ -91,6 +92,9 @@ function [] = plot_quad(a,b,c,d, color)
 end
 
 function [h1,h2,path] = draw_trajectory(obj,x0,x1,color1,color2, thickness, old_handle)
+%     tmp = x0(end);
+%     x0(end) = x1(1);
+%     x1(1) = tmp;
     path = [];
     t = obj.evaluate_arrival_time(x0,x1);
     [states, ~] = obj.evaluate_states_and_inputs(x0,x1);
@@ -100,7 +104,13 @@ function [h1,h2,path] = draw_trajectory(obj,x0,x1,color1,color2, thickness, old_
     X2 = [];
     Y2 = [];
     Z2 = [];
-    for jj=[0:t/10:t,t]
+    ts = [t:-t/10:0];
+    if(strcmp(color1,'green') && false)
+        disp("End")
+        disp(x1.')
+        disp("Iterations")
+    end
+    for jj=ts
         p = states(jj);
         X1 = [X1,p(1)];
         Y1 = [Y1,p(2)];
@@ -109,8 +119,16 @@ function [h1,h2,path] = draw_trajectory(obj,x0,x1,color1,color2, thickness, old_
         Y2 = [Y2,p(8)];
         Z2 = [Z2,p(9)];
         path = [path;jj,p.'];
+        
+        if(strcmp(color1,'green') && false)
+            disp(p.')
+        end
     end
-    
+    if(strcmp(color1,'green') && false)
+        disp("Start")
+        disp(x0.')
+        disp("Parent")
+    end
     if exist('old_handle','var') && old_handle ~= -1
         set(old_handle, 'XData', X1);
         set(old_handle, 'YData', Y1);

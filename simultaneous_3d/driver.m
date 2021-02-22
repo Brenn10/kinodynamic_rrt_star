@@ -1,15 +1,15 @@
 clc
 clear all
 % in a 10x10x10 cube
-start = [-.25,.5,.5,0,0,0,.25,.5,.5,0,0,0];
-goal  = [.25,.5,.5,0,0,0,-.25,.5,.5,0,0,0];
+start = [1,5,5,0,0,0,9,5,5,0,0,0];
+goal  = [9,5,5,0,0,0,1,5,5,0,0,0];
 
 radius = .2;
 
 state_limits = ...
-    [-1,1;
-    -1,1;
-    -1,1;
+    [0,10;
+    0,10;
+    0,10;
     -1,1;
     -1,1;
     -1,1];
@@ -66,7 +66,8 @@ disp("Running")
 [T, parents,iteration_times,iteration_costs] = rrt.run(sample_state, state_free, input_free, start', goal', display,500);
 
 load trajectory.mat
-save("RRT1times.mat",'iteration_times')
-save("Drone1Traj.mat",'full_path')
-save("Drone1Costs.mat",'iteration_costs')
+delete trajectory.mat
+save("times.mat",'iteration_times')
+save("traj.mat",'full_path')
+save("cost.mat",'iteration_costs')
 

@@ -55,6 +55,10 @@ classdef rrtstar
             assume(obj.x0, 'real');
             obj.x1 = sym('x1',[state_dims,1]);
             assume(obj.x1, 'real');
+            
+            tmp = obj.x0(end);
+            obj.x0(end) = obj.x1(1);
+            obj.x1(1) = tmp;
 
             if ~exist('dist_idxs','var') || isempty(dist_idxs)
                 dist_idxs = 1:size(B,1);
@@ -166,7 +170,7 @@ classdef rrtstar
             obj.max_time = time;
         end
 
-        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)
+        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)   
             T = [start];
             costs = [0];
             times = [0];
