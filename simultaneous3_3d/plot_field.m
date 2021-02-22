@@ -46,9 +46,7 @@ if true
 end
 
 if goal_cost < scratch.last_cost
-    if(false)
-        disp("new solution found")
-    end
+
     for ii=1:length(scratch.path_handles)
        delete(scratch.path_handles(ii)); 
     end
@@ -63,7 +61,7 @@ if goal_cost < scratch.last_cost
     c = p;
     p = parents(c);
     while p > 0
-        [h1,h2, path] = draw_trajectory(obj, tree(:,p), tree(:,c), 'green','red','blue', 3);
+        [h1,h2,h3, path] = draw_trajectory(obj, tree(:,p), tree(:,c), 'green','red','blue', 3);
         full_path(:,1) = full_path(:,1) + path(1,1);
         full_path = [full_path;path];
         scratch.path_handles = [scratch.path_handles,h1,h2,h3];
@@ -108,11 +106,7 @@ function [h1,h2,h3,path] = draw_trajectory(obj,x0,x1,color1,color2,color3, thick
     Y3 = [];
     Z3 = [];
     ts = [t:-t/10:0];
-    if(strcmp(color1,'green') && false)||true
-        disp("End")
-        disp(x1.')
-        disp("Iterations")
-    end
+
     for jj=ts
         p = states(jj);
         X1 = [X1,p(1)];
@@ -125,16 +119,8 @@ function [h1,h2,h3,path] = draw_trajectory(obj,x0,x1,color1,color2,color3, thick
         Y3 = [Y3,p(14)];
         Z3 = [Z3,p(15)];
         path = [path;jj,p.'];
-        
-        if(strcmp(color1,'green') && false)||true
-            disp(p.')
-        end
     end
-    if(strcmp(color1,'green') && false)||true
-        disp("Start")
-        disp(x0.')
-        disp("Parent")
-    end
+
     if exist('old_handle','var') && old_handle ~= -1
         set(old_handle, 'XData', X1);
         set(old_handle, 'YData', Y1);
