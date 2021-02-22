@@ -55,46 +55,38 @@ classdef rrtstar
             assume(obj.x0, 'real');
             obj.x1 = sym('x1',[state_dims,1]);
             assume(obj.x1, 'real');
-             % Wrong: x1:0,1,2,3,4,5,6 and x0:12, 14, 15, 16, 17, 18
-             tmp = obj.x1(1);
-             
-             obj.x1(1) = obj.x0(15);
-             % x1:1 => x0:15
-             obj.x0(15) = tmp;
-             % x0:15 => 
-             
-             tmp = obj.x0(14);
-             
-             obj.x0(14) = obj.x1(2);
-             % x0:14 => x1:2
-             obj.x1(2) = obj.x1(5);
-             % x1:2 => x1:5
-             obj.x1(5) = obj.x0(17);
-             % x1:5 => x0:17
-             obj.x0(17) = tmp; % check
-             % x0:17 =>
-             
-             tmp = obj.x1(3); 
-             obj.x1(3) = obj.x0(16);
-             % x1:3 => x0:16
-             obj.x0(16) = tmp; % check
-             % x0:16 =>
-             
-             tmp = obj.x1(4);
-             obj.x1(4) = obj.x1(6);
-             % x1:4 => x1:6
-             obj.x1(6) = obj.x1(7);
-             % x1:6 => x1:7
-             obj.x1(7) = obj.x0(18);
-             % x1:7 => x0:18
-             obj.x0(18) = tmp; % check
-             % x0:18 =>
-             
-             
-             
-             
-             
-             
+            
+            tmp = obj.x1(1);
+            obj.x1(1) = obj.x0(15);
+            obj.x0(15) = obj.x0(13);
+            obj.x0(13)= obj.x0(12);
+            obj.x0(12) = tmp;
+            
+            tmp = obj.x0(14);
+            obj.x0(14) = obj.x1(2);
+            % x0:14 => x1:2
+            obj.x1(2) = obj.x1(5);
+            % x1:2 => x1:5
+            obj.x1(5) = obj.x0(17);
+            % x1:5 => x0:17
+            obj.x0(17) = tmp; % check
+            % x0:17 =>
+
+            tmp = obj.x1(3); 
+            obj.x1(3) = obj.x0(16);
+            % x1:3 => x0:16
+            obj.x0(16) = tmp; % check
+            % x0:16 =>
+
+            tmp = obj.x1(4);
+            obj.x1(4) = obj.x1(6);
+            % x1:4 => x1:6
+            obj.x1(6) = obj.x1(7);
+            % x1:6 => x1:7
+            obj.x1(7) = obj.x0(18);
+            % x1:7 => x0:18
+            obj.x0(18) = tmp; % check
+            % x0:18 =>
 
             if ~exist('dist_idxs','var') || isempty(dist_idxs)
                 dist_idxs = 1:size(B,1);
