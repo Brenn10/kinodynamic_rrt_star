@@ -1,15 +1,16 @@
 clc
 clear all
 % in a 10x10x10 cube
-start = [1,5,5,0,0,0,9,5,5,0,0,0];
-goal  = [9,5,5,0,0,0,1,5,5,0,0,0];
 
-radius = .2;
+window
+
+init = [start,0,0,0,stop,0,0,0];
+goal  = [stop,0,0,0,start,0,0,0];
+
+radius = .1;
 
 state_limits = ...
-    [0,10;
-    0,10;
-    0,10;
+    [world_limits;
     -1,1;
     -1,1;
     -1,1];
@@ -46,10 +47,8 @@ c = zeros(state_dims,1);
 
 R = eye(input_dims);
 
-obstacles = [];%4,6,0,1,4,10;
-             %4,0,0,1,4,10;
-             %4,0,0,1,10,4;
-             %4,0,6,1,10,4];
+iterations = 10000;
+obstacles = obs;
          
 disp(['calculating closed form solution']);
 rrt = rrtstar(A,B,c,R,[1:3,7:9]);
@@ -63,11 +62,12 @@ sample_state = @()(sample_free_states(sampling_limits,state_limits, obstacles, r
 display = @(scratch, obj, tree, parents, goal, goal_cost, goal_parent)(plot_field(scratch, obj, tree, parents, obstacles, goal, goal_cost, goal_parent));
 
 disp("Running")
-[T, parents,iteration_times,iteration_costs] = rrt.run(sample_state, state_free, input_free, start', goal', display,500);
+[T, parents,iteration_times,iteration_costs,iteration_goal_times] = rrt.run(sample_state, state_free, input_free, init', goal', display,iterations);
 
 load trajectory.mat
 delete trajectory.mat
 save("times.mat",'iteration_times')
+save("goal_times.mat",'iteration_goal_times')
 save("traj.mat",'full_path')
 save("cost.mat",'iteration_costs')
 

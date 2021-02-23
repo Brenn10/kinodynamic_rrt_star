@@ -170,7 +170,7 @@ classdef rrtstar
             obj.max_time = time;
         end
 
-        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)   
+        function [path_states, closest_end_state,iteration_times,iteration_costs,iteration_goal_times] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)   
             T = [start];
             costs = [0];
             times = [0];
@@ -201,12 +201,14 @@ classdef rrtstar
 
             display_scratch = -1;
             it = 0;
+            iteration_goal_times =[];
             iteration_times =[];
             iteration_costs =[];
             while it<it_limit && goal_time > obj.max_time
                 iteration_times = [it, cputime;iteration_times];
                 it = it+1;
                 disp(['iteration ',num2str(it), ' of ', num2str(it_limit), '(time:',num2str(goal_time),')']);
+                iteration_goal_times =[iteration_goal_times;it,goal_time];
                 sample_ok = false;
                 tic;
                 while ~sample_ok

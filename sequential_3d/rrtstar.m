@@ -166,7 +166,7 @@ classdef rrtstar
             obj.max_time = time;
         end
 
-        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)
+        function [path_states, closest_end_state,iteration_times,iteration_costs,iteration_goal_times] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)
             T = [start];
             costs = [0];
             times = [0];
@@ -189,6 +189,8 @@ classdef rrtstar
             [cost, time] = evaluate_cost(obj, start, goal);
             [states, u] = evaluate_states_and_inputs(obj,start,goal,time);
             if is_state_free(states,[0,time],0) && is_input_free(u,[0,time])
+                
+                iteration_goal_times =[1,time];
                 disp('goal is reachable from the start node (optimal solution)');
                 it_limit = 0;
                 goal_parent = 1;
@@ -199,10 +201,12 @@ classdef rrtstar
             it = 0;
             iteration_times =[];
             iteration_costs =[];
+            iteration_goal_times =[];
             while it<it_limit && goal_time > obj.max_time
                 iteration_times = [it, cputime;iteration_times];
                 it = it+1;
                 disp(['iteration ',num2str(it), ' of ', num2str(it_limit), '(time:',num2str(goal_time),')']);
+                iteration_goal_times =[iteration_goal_times; it,goal_time];
                 sample_ok = false;
                 tic;
                 while ~sample_ok
