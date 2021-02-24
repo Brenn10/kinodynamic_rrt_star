@@ -2,21 +2,21 @@ clc
 clear all
 % in a 10x10x10 cube
 
+three_window_course_3
+
 % drone 1 start
 
-start1 = [1,5,5,0,0,0];
-goal1  = [9,5,5,0,0,0];
-start2 = goal1;
-goal2  = [5,9,5,0,0,0];
-start3 = goal2;
-goal3 = start1;
+start1 = [start1,0,0,0];
+goal1  = [stop1,0,0,0];
+start2 = [start2,0,0,0];
+goal2 = [stop2 ,0,0,0];
+start3 = [start3,0,0,0];
+goal3 = [stop3,0,0,0];
 
-radius = .2;
+radius = .15;
 
 state_limits = ...
-    [0,10;
-    0,10;
-    0,10;
+    [world_limits;
     -1,1;
     -1,1;
     -1,1];
@@ -24,9 +24,9 @@ state_limits = ...
 sampling_limits = state_limits;
 
 input_limits = ...
-    [ -1,1;
-      -1,1;
-      -1,1];
+    [ -.9,.9;
+      -.9,.9;
+      -.7,.7];
 
 state_dims = 6;
 input_dims = 3;
@@ -49,8 +49,8 @@ c = zeros(state_dims,1);
 
 R = eye(3);
 
-obstacles = [];
-iterations = 100;
+obstacles = obs;
+iterations = 10000;
          
 disp(['calculating closed form solution']);
 rrt = rrtstar(A,B,c,R,1:3);

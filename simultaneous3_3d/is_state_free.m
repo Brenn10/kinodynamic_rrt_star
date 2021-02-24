@@ -15,7 +15,6 @@ if isa(state,'sym')
     r = [time_range(1):max_dist:time_range(2)];
 
     s = eval(subs(state,r));
-    disp(s)
 
     for ii=1:size(state_limits, 1)
         dyn_obs = dynamic_obstacles(r(ii)+base_time);
@@ -89,6 +88,11 @@ for ii=1:n_obs
         return;
     end
     
+    if s(13)>obs(1) && s(13)<obs(1)+obs(4) && s(14)>obs(2) && s(14)<obs(2)+obs(5) && s(15)>obs(3) && s(15)<obs(3)+obs(6) 
+        coll = true;
+        return;
+    end
+    
     closest = min(max(s(1:3),obs(1:3)),obs(1:3)+obs(4:6));
     d = s(1:3)-closest;
     if sum(d.^2) < radius^2
@@ -103,12 +107,29 @@ for ii=1:n_obs
         return;
     end
     
+    closest = min(max(s(13:15),obs(1:3)),obs(1:3)+obs(4:6));
+    d = s(13:15)-closest;
+    if sum(d.^2) < radius^2
+        coll = true;
+        return;
+    end
+    
 end
 
-if(sum((s(1:3)-s(7:9)).^2) <radius^2)
+if(sum((s(1:3)-s(7:9)).^2) <(2*radius)^2)
     coll = true;
     return;
 end
-            
+
+if(sum((s(13:15)-s(7:9)).^2) <(2*radius)^2)
+    coll = true;
+    return;
+end
+
+if(sum((s(1:3)-s(13:15)).^2) <(2*radius)^2)
+    coll = true;
+    return;
+end
+
 end
 

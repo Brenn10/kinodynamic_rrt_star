@@ -34,7 +34,7 @@ end
 %hold on;
 scratch.trajectory_handles = [scratch.trajectory_handles, -1];
 scratch.last_parents = [scratch.last_parents, -1];
-if true
+if false
     idx = find(scratch.last_parents~=parents);
     for ii=1:length(idx)
         

@@ -2,15 +2,15 @@ clc
 clear all
 % in a 10x10x10 cube
 
-scale = 1;
-start = [1,5,5,0,0,0,9,5,5,0,0,0,5,9,5,0,0,0];
-goal  = [9,5,5,0,0,0,5,9,5,0,0,0,1,5,5,0,0,0];
+three_window_course_3;
 
-radius = .2;
+scale = 1;
+start = [start1,0,0,0,start2,0,0,0,start3,0,0,0];
+goal  = [stop1,0,0,0,stop2,0,0,0,stop3,0,0,0];
+
+radius = .1;
 state_limits = [
-    0,10;
-    0,10;
-    0,10;
+    world_limits;
     -1,1;
     -1,1;
     -1,1];
@@ -20,9 +20,9 @@ state_limits = [state_limits;state_limits;state_limits];
 sampling_limits = state_limits;
 
 input_limits = ...
-    [-1,1;
-    -1,1;
-    -1,1];
+    [-.8,.8;
+    -.8,.8;
+    -.8,.8];
 input_limits = [input_limits;input_limits;input_limits];
 
 state_dims = 18;
@@ -48,10 +48,8 @@ c = zeros(state_dims,1);
 
 R = eye(input_dims);
 
-obstacles = [];%4,6,0,1,4,10;
-             %4,0,0,1,4,10;
-             %4,0,0,1,10,4;
-             %4,0,6,1,10,4];
+iterations = 10000;
+obstacles = [obs];
          
 disp(['calculating closed form solution']);
 rrt = rrtstar(A,B,c,R,[1:3,7:9,13:15]);
@@ -65,7 +63,7 @@ sample_state = @()(sample_free_states(sampling_limits,state_limits, obstacles, r
 display = @(scratch, obj, tree, parents, goal, goal_cost, goal_parent)(plot_field(scratch, obj, tree, parents, obstacles, goal, goal_cost, goal_parent));
 
 disp("Running")
-[T, parents,iteration_times,iteration_costs] = rrt.run(sample_state, state_free, input_free, start', goal', display,500);
+[T, parents,iteration_times,iteration_costs] = rrt.run(sample_state, state_free, input_free, start', goal', display,iterations);
 
 load trajectory.mat
 delete trajectory.mat

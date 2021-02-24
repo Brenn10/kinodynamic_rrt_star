@@ -1,15 +1,14 @@
 clc
 clear all
 
-window
+three_window_course_2
 
-% in a 10x10x10 cube
 start1 = [start,0,0,0];
 goal1  = [stop,0,0,0];
 start2 = [stop,0,0,0];
 goal2 = [start,0,0,0];
 
-radius = .1;
+radius = .15;
 
 state_limits = ...
     [world_limits;
@@ -20,9 +19,9 @@ state_limits = ...
 sampling_limits = state_limits;
 
 input_limits = ...
-    [ -1,1;
-      -1,1;
-      -1,1];
+    [ -.9,.9;
+      -.9,.9;
+      -.7,.7];
 
 state_dims = 6;
 input_dims = 3;

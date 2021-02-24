@@ -2,12 +2,12 @@ clc
 clear all
 % in a 10x10x10 cube
 
-window
+three_window_course
 
 init = [start,0,0,0,stop,0,0,0];
 goal  = [stop,0,0,0,start,0,0,0];
 
-radius = .1;
+radius = .15;
 
 state_limits = ...
     [world_limits;
@@ -19,9 +19,9 @@ state_limits = [state_limits;state_limits];
 sampling_limits = state_limits;
 
 input_limits = ...
-    [ -1,1;
-      -1,1;
-      -1,1];
+    [ -.9,.9;
+      -.9,.9;
+      -.7,.7];
 input_limits = [input_limits;input_limits];
 
 state_dims = 12;
@@ -50,6 +50,7 @@ R = eye(input_dims);
 iterations = 10000;
 obstacles = obs;
          
+
 disp(['calculating closed form solution']);
 rrt = rrtstar(A,B,c,R,[1:3,7:9]);
 disp(['starting algorithm']);
