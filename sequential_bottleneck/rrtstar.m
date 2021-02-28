@@ -323,13 +323,13 @@ classdef rrtstar
                 
             end
 
-            next = goal_parent;
-            path_states = goal;
-            while next ~= -1
-                path_states = [T(:,next) ,path_states];
-                next = parents(next);
-            end
-
+%             next = goal_parent;
+%             path_states = goal;
+%             while next ~= -1
+%                 path_states = [T(:,next) ,path_states];
+%                 next = parents(next);
+%             end
+            path_states=[]
             if ~exist('max_distance','var') || isempty(max_distance)
                 closest_end_state = goal;
             else
