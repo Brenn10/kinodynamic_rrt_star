@@ -2,12 +2,12 @@ clc
 clear all
 % in a 10x10x10 cube
 
-three_window_course
+bottleneck
 
-init = [start,0,0,0,stop,0,0,0];
-goal  = [stop,0,0,0,start,0,0,0];
+init = [start1,0,0,0,start2,0,0,0];
+goal  = [stop1,0,0,0,stop2,0,0,0];
 
-radius = .1;
+radius = .15
 
 state_limits = ...
     [world_limits;
