@@ -8,49 +8,8 @@ three_window_course_3
 
 start1 = [start1,0,0,0];
 goal1  = [stop1,0,0,0];
-start2 = [start2,0,0,0];
-goal2 = [stop2 ,0,0,0];
-start3 = [start3,0,0,0];
-goal3 = [stop3,0,0,0];
 
-radius = .15;
-
-state_limits = ...
-    [world_limits;
-    -1,1;
-    -1,1;
-    -1,1];
-
-sampling_limits = state_limits;
-
-input_limits = ...
-    [ -.9,.9;
-      -.9,.9;
-      -.7,.7];
-
-state_dims = 6;
-input_dims = 3;
-
-A= [0,0,0,1,0,0;
-    0,0,0,0,1,0;
-    0,0,0,0,0,1;
-    0,0,0,0,0,0;
-    0,0,0,0,0,0;
-    0,0,0,0,0,0];
-
-B= [0,0,0;
-    0,0,0;
-    0,0,0;
-    1,0,0;
-    0,1,0;
-    0,0,1];
-
-c = zeros(state_dims,1);
-
-R = eye(3);
-
-obstacles = obs;
-iterations = 10000;
+setup
          
 disp(['calculating closed form solution']);
 rrt = rrtstar(A,B,c,R,1:3);

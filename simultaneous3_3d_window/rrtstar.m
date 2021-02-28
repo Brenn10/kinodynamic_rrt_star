@@ -38,7 +38,7 @@ classdef rrtstar
     end
     
     methods
-        function obj = rrtstar(A, B, c, R, dist_idxs,time_weight)
+        function obj = rrtstar(A, B, c, R, dist_idxs)
 
             if rank(ctrb(A,B)) ~= size(A,1)
                 disp('System is not controllable - aborting');
@@ -55,12 +55,44 @@ classdef rrtstar
             assume(obj.x0, 'real');
             obj.x1 = sym('x1',[state_dims,1]);
             assume(obj.x1, 'real');
+            
+            tmp = obj.x1(1);
+            obj.x1(1) = obj.x0(15);
+            obj.x0(15) = obj.x0(13);
+            obj.x0(13)= obj.x0(12);
+            obj.x0(12) = tmp;
+            
+            tmp = obj.x0(14);
+            obj.x0(14) = obj.x1(2);
+            % x0:14 => x1:2
+            obj.x1(2) = obj.x1(5);
+            % x1:2 => x1:5
+            obj.x1(5) = obj.x0(17);
+            % x1:5 => x0:17
+            obj.x0(17) = tmp; % check
+            % x0:17 =>
+
+            tmp = obj.x1(3); 
+            obj.x1(3) = obj.x0(16);
+            % x1:3 => x0:16
+            obj.x0(16) = tmp; % check
+            % x0:16 =>
+
+            tmp = obj.x1(4);
+            obj.x1(4) = obj.x1(6);
+            % x1:4 => x1:6
+            obj.x1(6) = obj.x1(7);
+            % x1:6 => x1:7
+            obj.x1(7) = obj.x0(18);
+            % x1:7 => x0:18
+            obj.x0(18) = tmp; % check
+            % x0:18 =>
 
             if ~exist('dist_idxs','var') || isempty(dist_idxs)
                 dist_idxs = 1:size(B,1);
             end
 
-            [obj.best_arrival, obj.states_eq, obj.control_eq, obj.cost_eq, obj.distance_eq] = obj.calc_equations(obj.A_,obj.B_,obj.R_,obj.c_,dist_idxs,time_weight);
+            [obj.best_arrival, obj.states_eq, obj.control_eq, obj.cost_eq, obj.distance_eq] = obj.calc_equations(obj.A_,obj.B_,obj.R_,obj.c_,dist_idxs);
 
 
             %%calculate the factors for the resulting polynomial explicitly
@@ -74,7 +106,7 @@ classdef rrtstar
                 disp('either the result is not a polynomial or the degree is too high');
             end
 
-            p([obj.x0', obj.x1']) = fliplr(p1);
+            p([obj.x0', obj.x1']) = fliplr(p1)
             obj.eval_arrival_internal = matlabFunction(p); %matlabFunction(p, 'file', 'arrival_time.m'); %to write to file
 
             obj.eval_cost_internal = matlabFunction(obj.cost_eq);
@@ -166,7 +198,7 @@ classdef rrtstar
             obj.max_time = time;
         end
 
-        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)
+        function [path_states, closest_end_state,iteration_times,iteration_costs] = run(obj, sample_free_state, is_state_free, is_input_free, start, goal, display, iterations, max_distance)   
             T = [start];
             costs = [0];
             times = [0];
@@ -319,13 +351,12 @@ classdef rrtstar
                 
             end
 
-%             next = goal_parent;
-%             path_states = goal;
-%             while next ~= -1
-%                 path_states = [T(:,next) ,path_states];
-%                 next = parents(next);
-%             end
-            path_states = []
+            next = goal_parent;
+            path_states = goal;
+            while next ~= -1
+                path_states = [T(:,next) ,path_states];
+                next = parents(next);
+            end
 
             if ~exist('max_distance','var') || isempty(max_distance)
                 closest_end_state = goal;
@@ -359,7 +390,7 @@ classdef rrtstar
 
     methods (Access = protected)
 
-        function [tau_star, states, control, cost, sq_distance] = calc_equations(obj, A, B, R, c, dist_idxs,time_weight)
+        function [tau_star, states, control, cost, sq_distance] = calc_equations(obj, A, B, R, c, dist_idxs)
             %the solution of the equation 'tau_star = 0' gives the best arrival time
             %states, control, and cost depend on t_s which is the solution from above
             state_dims = size(A,1);
@@ -373,15 +404,15 @@ classdef rrtstar
             solution = expm([A, B/R*B';zeros(state_dims), -A']*(obj.t-obj.t_s))*[obj.x1;subs(d,obj.t,obj.t_s)]+ ...
                 int(expm([A, B/R*B';zeros(state_dims), -A']*(obj.t-obj.x))*[c; zeros(state_dims,1)],obj.x,obj.t_s,obj.t);
 
-            control = R\B'*solution(state_dims+1:2*state_dims,:);
-            states = solution(1:state_dims);
+            control = R\B'*solution(state_dims+1:2*state_dims,:)
+            states = solution(1:state_dims)
 
             if exist('dist_idxs','var')
                 sq_distance = sum((obj.x1(dist_idxs)-states(dist_idxs)).^2)-obj.min_dist^2;
             end
 
-            cost = int(time_weight+control'*R*control, obj.t, 0, obj.t_s);
-
+            cost = int(1+control'*R*control, obj.t, 0, obj.t_s);
+            
         end
 
     end

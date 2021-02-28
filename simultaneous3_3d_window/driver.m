@@ -2,7 +2,7 @@ clc
 clear all
 % in a 10x10x10 cube
 
-three_window_course_3;
+window;
 
 scale = 1;
 start = [start1,0,0,0,start2,0,0,0,start3,0,0,0];
