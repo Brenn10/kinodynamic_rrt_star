@@ -1,4 +1,4 @@
-radius = .1;
+radius = .15;
 
 state_limits = ...
     [world_limits;
@@ -34,5 +34,5 @@ c = zeros(state_dims,1);
 
 R = eye(3);
 
-iterations = 10000;
+iterations = 5000;
 obstacles = obs;

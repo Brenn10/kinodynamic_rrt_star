@@ -63,11 +63,12 @@ sample_state = @()(sample_free_states(sampling_limits,state_limits, obstacles, r
 display = @(scratch, obj, tree, parents, goal, goal_cost, goal_parent)(plot_field(scratch, obj, tree, parents, obstacles, goal, goal_cost, goal_parent));
 
 disp("Running")
-[T, parents,iteration_times,iteration_costs] = rrt.run(sample_state, state_free, input_free, start', goal', display,iterations);
+[T, parents,iteration_times,iteration_costs,iteration_goal_times] = rrt.run(sample_state, state_free, input_free, start', goal', display,iterations);
 
 load trajectory.mat
 delete trajectory.mat
 save("times.mat",'iteration_times')
+save("goal_times.mat",'iteration_goal_times')
 save("traj.mat",'full_path')
 save("cost.mat",'iteration_costs')
 

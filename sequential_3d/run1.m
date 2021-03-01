@@ -1,7 +1,7 @@
 clc
 clear all
 
-three_window_course_2
+no_obstacles
 
 start1 = [start,0,0,0];
 goal1  = [stop,0,0,0];
