@@ -1,11 +1,12 @@
 clear all
 clc
-do_obstacle_course = true;
-do_no_obstacles = true;
-do_no_obstacles_2 = false;
-do_window_2 = true;
-do_window_3 = true;
-
+do_obstacle_course = false;
+do_no_obstacles = false;
+do_no_obstacles_2 = true;
+do_window_2 = false;
+do_window_3 = false;
+line_width = 2;
+font_size = 12;
 %% no_obstacle_2
 if do_no_obstacles_2
     setup = "no_obstacle_2d";
@@ -68,12 +69,14 @@ if do_no_obstacles_2
 %     legend(["Sequential" , "Simultaneous"])
 
 %     subplot(2,1,2)
-    plot(seq_costs(:,1),seq_costs(:,2));
-    hold on;
-%     plot(sim_costs(:,1),sim_costs(:,2));
+    
+    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',line_width);
+%     hold on;
+%     plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',line_width);
     %title("No Obstacle Costs")
-%     legend(["Sequential" , "Simultaneous"])
+    legend(["Sequential" , "Simultaneous"])
     xlabel("Iterations")
+    set(gca,'FontSize', font_size);
     ylabel("Cost")
     saveas(gcf,strcat(setup,'_cost.png'))
 end
@@ -139,12 +142,13 @@ if do_no_obstacles
 %     legend(["Sequential" , "Simultaneous"])
 
 %     subplot(2,1,2)
-    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',2);
+    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',line_width);
     hold on;
-    plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',2);
+    plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',line_width);
     %title("No Obstacle Costs")
     legend(["Sequential" , "Simultaneous"])
     xlabel("Iterations")
+    set(gca,'FontSize', font_size);
     ylabel("Cost")
     saveas(gcf,strcat(setup,'_cost.png'))
 end
@@ -208,15 +212,15 @@ if do_obstacle_course
     min_durs = min([seq1_durs(:,2),seq2_durs(:,2)],[],2);
     seq_costs = [seq1_costs(:,1),seq1_costs(:,2)+seq2_costs(:,2)-min_durs(:)];
 
-    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',2);
+    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',line_width);
     hold on;
-    plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',2);
+    plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',line_width);
     %title("Costs")
-    lgd = legend(["Sequential" , "Simultaneous"])
+    %lgd = legend(["Sequential" , "Simultaneous"])
     %title("Obstacle Course Costs")
     xlabel("Iterations")
     ylabel("Cost")
-    set(gca,'FontSize', 12);
+    set(gca,'FontSize', font_size);
     saveas(gcf,strcat(setup,'_cost.png'))
 end
 
@@ -288,14 +292,14 @@ if do_window_2
 % 
 %     subplot(2,1,2)
 
-    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',2);
+    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',line_width);
     hold on;
-    plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',2);
-    legend(["Sequential" , "Simultaneous"])
+    plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',line_width);
+    %legend(["Sequential" , "Simultaneous"])
     %title("Window 2 Costs")
     xlabel("Iterations")
     ylabel("Cost")
-    set(gca,'FontSize', 12);
+    set(gca,'FontSize', font_size);
     saveas(gcf,strcat(setup,'_cost.png'))
 end
 
@@ -375,15 +379,15 @@ if do_window_3
 
    
     figure()
-    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',2);
+    plot(seq_costs(:,1),seq_costs(:,2),'LineWidth',line_width);
     hold on;
-    plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',2);
+    plot(sim_costs(:,1),sim_costs(:,2),'LineWidth',line_width);
     %title("Costs")
-    legend(["Sequential" , "Simultaneous"])
-    legend('Location','northwest')
+    %legend(["Sequential" , "Simultaneous"])
+    %legend('Location','northwest')
     %title("Window 3 Costs")
     xlabel("Iterations")
     ylabel("Cost")
-    set(gca,'FontSize', 12);
+    set(gca,'FontSize', font_size);
     saveas(gcf,strcat(setup,'_cost.png'))
 end
