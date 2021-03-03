@@ -28,7 +28,15 @@ if ~isa(scratch,'struct')
     end
         
 end
+plot_end(goal_state(1:3),'blue')
+plot_end(goal_state(7:9),'green')
+plot_end(goal_state(13:15),'cyan')
 
+
+plot_end(stop1,'blue')
+plot_end(stop2,'
+
+pause
 %clf;
 %hold on;
 scratch.trajectory_handles = [scratch.trajectory_handles, -1];
@@ -90,7 +98,13 @@ function [] = plot_quad(a,b,c,d, color)
     p = [a;b;c;d]; 
     fill3(p(:,1),p(:,2),p(:,3), zeros(4,1), 'FaceColor', [.8,.8,.8], 'EdgeColor', color);
 end
+function [] = plot_end(s, color)    
+    
+    width = .15;
 
+    [X,Y,Z] = sphere;
+    surf(X*width+s(1),Y*width+s(2),Z*width+s(3),'FaceColor',color)
+end
 function [h1,h2,h3,path] = draw_trajectory(obj,x0,x1,color1,color2,color3, thickness, old_handle)
 
     path = [];

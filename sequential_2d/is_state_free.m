@@ -20,7 +20,7 @@ if isa(state,'sym')
         dyn_obs = dynamic_obstacles(r(ii)+base_time);
         
         curr_obstacles =[ obstacles;  dyn_obs];
-        if sum(s(ii,:)<state_limits(ii, 1)) > 0 || sum(s(ii,:)>state_limits(ii, 2)) > 0
+        if sum(s(ii,:)-state_limits(ii, 1)>1e-8) > 0 || sum(s(ii,:)-state_limits(ii, 2)>1e-8) > 0
         %if ~isAlways(state(ii) >= state_limits(ii, 1)) || ~isAlways(state(ii) <= state_limits(ii, 2))
             ok = false;
             return;
@@ -42,7 +42,7 @@ elseif isa(state, 'function_handle')
         curr_obstacles =[ obstacles;  dyn_obs];
         
         for ii=1:size(state_limits, 1)
-            if s(ii) < state_limits(ii, 1) || s(ii) > state_limits(ii, 2)
+            if state_limits(ii, 1)-s(ii) >1e-8 || s(ii)-state_limits(ii, 2) >1e-8
                 ok = false;
                 return;
             end

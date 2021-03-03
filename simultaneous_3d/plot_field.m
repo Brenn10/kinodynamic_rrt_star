@@ -29,6 +29,10 @@ if ~isa(scratch,'struct')
         
 end
 
+plot_end(goal_state(1:3),'green')
+plot_end(goal_state(7:9),'blue')
+axis equal
+pause
 %clf;
 %hold on;
 scratch.trajectory_handles = [scratch.trajectory_handles, -1];
@@ -45,7 +49,7 @@ if false
     scratch.last_parents = parents;
 end
 
-if goal_cost < scratch.last_cost
+if goal_cost < scratch.last_cost && false
     if(false)
         disp("new solution found")
     end
@@ -89,6 +93,22 @@ end
 function [] = plot_quad(a,b,c,d, color)    
     p = [a;b;c;d]; 
     fill3(p(:,1),p(:,2),p(:,3), zeros(4,1), 'FaceColor', [.8,.8,.8], 'EdgeColor', color);
+end
+
+function [] = plot_start(s, color)
+    width = .2;
+
+    [X,Y,Z] = sphere;
+    surf(X*width+s(1),Y*width+s(2),Z*width+s(3),'FaceColor',color)
+    
+end
+
+function [] = plot_end(s, color)    
+    
+    width = .15;
+
+    [X,Y,Z] = sphere;
+    surf(X*width+s(1),Y*width+s(2),Z*width+s(3),'FaceColor',color,'EdgeColor',color)
 end
 
 function [h1,h2,path] = draw_trajectory(obj,x0,x1,color1,color2, thickness, old_handle)

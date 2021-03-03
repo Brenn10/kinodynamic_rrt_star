@@ -28,6 +28,21 @@ if ~isa(scratch,'struct')
     end
         
 end
+start1 = [-1,-.5,1.5];
+start2 = [-1,0,1.5];
+start3 = [-1,.5,1.5];
+plot_end(start1,'blue')
+plot_end(start2,'green')
+plot_end(start3,'cyan')
+
+stop1 = [.5,-.5,1.5];
+stop2 = [.5,0,1.5];
+stop3 = [.5,.5,1.5];
+plot_end(stop1,'blue')
+plot_end(stop2,'green')
+plot_end(stop3,'cyan')
+axis equal
+pause
 
 %clf;
 %hold on;
@@ -90,7 +105,13 @@ function [] = plot_quad(a,b,c,d, color)
     p = [a;b;c;d]; 
     fill3(p(:,1),p(:,2),p(:,3), zeros(4,1), 'FaceColor', [.8,.8,.8], 'EdgeColor', color);
 end
+function [] = plot_end(s, color)    
+    
+    width = .15;
 
+    [X,Y,Z] = sphere;
+    surf(X*width+s(1),Y*width+s(2),Z*width+s(3),'FaceColor',color,'EdgeColor',color)
+end
 function [h1,h2,h3,path] = draw_trajectory(obj,x0,x1,color1,color2,color3, thickness, old_handle)
 
     path = [];

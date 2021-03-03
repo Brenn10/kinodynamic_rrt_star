@@ -27,7 +27,7 @@ elseif isa(input, 'function_handle')
     for jj=1:length(r)
         s = input(r(jj));
         for ii=1:size(input_limits, 1)
-            if s(ii) < input_limits(ii, 1) || s(ii) > input_limits(ii, 2)
+            if input_limits(ii, 1)-s(ii) >1e-8  || s(ii) - input_limits(ii, 2)>1e-8
                 ok = false;
                 return;
             end

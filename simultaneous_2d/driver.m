@@ -1,14 +1,14 @@
 clc
 clear all
 % in a 10x10x10 cube
-start = [1,5,0,0,9,5,0,0];
-goal  = [9,5,0,0,1,5,0,0];
+start = [.25,.5,0,0,.75,.5,0,0];
+goal  = [.75,.5,0,0,.25,.5,0,0];
 
-radius = .2;
+radius = .15;
 
 state_limits = ...
-    [0,10;
-    0,10;
+    [0,1;
+    0,1;
     -1,1;
     -1,1];
 state_limits = [state_limits;state_limits];
@@ -56,11 +56,12 @@ sample_state = @()(sample_free_states(sampling_limits,state_limits, obstacles, r
 display = @(scratch, obj, tree, parents, goal, goal_cost, goal_parent)(plot_field(scratch, obj, tree, parents, obstacles, goal, goal_cost, goal_parent));
 
 disp("Running")
-[T, parents,iteration_times,iteration_costs] = rrt.run(sample_state, state_free, input_free, start', goal', display,500);
+[T, parents,iteration_times,iteration_costs,iteration_goal_times] = rrt.run(sample_state, state_free, input_free, start', goal', display,10000);
 
 load trajectory.mat
 delete trajectory.mat
 save("times.mat",'iteration_times')
+save("goal_times.mat",'iteration_goal_times')
 save("traj.mat",'full_path')
 save("cost.mat",'iteration_costs')
 
