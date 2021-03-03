@@ -62,14 +62,14 @@ if do_no_obstacles
 %     plot(seq_durs(:,1),seq_durs(:,2));
 %     hold on;
 %     plot(sim_durs(:,1),sim_durs(:,2));
-%     title("Durations")
+%     %title("Durations")
 %     legend(["Sequential" , "Simultaneous"])
 
 %     subplot(2,1,2)
     plot(seq_costs(:,1),seq_costs(:,2));
     hold on;
     plot(sim_costs(:,1),sim_costs(:,2));
-    title("No Obstacle Costs")
+    %title("No Obstacle Costs")
     legend(["Sequential" , "Simultaneous"])
     xlabel("Iterations")
     ylabel("Cost")
@@ -138,9 +138,9 @@ if do_obstacle_course
     plot(seq_costs(:,1),seq_costs(:,2));
     hold on;
     plot(sim_costs(:,1),sim_costs(:,2));
-    title("Costs")
+    %title("Costs")
     legend(["Sequential" , "Simultaneous"])
-    title("Obstacle Course Costs")
+    %title("Obstacle Course Costs")
     xlabel("Iterations")
     ylabel("Cost")
     saveas(gcf,strcat(setup,'_cost.png'))
@@ -209,7 +209,7 @@ if do_window_2
 %     plot(seq_durs(:,1),seq_durs(:,2));
 %     hold on;
 %     plot(sim_durs(:,1),sim_durs(:,2));
-%     title("Durations")
+%     %title("Durations")
 %     legend(["Sequential" , "Simultaneous"])
 % 
 %     subplot(2,1,2)
@@ -217,7 +217,7 @@ if do_window_2
     hold on;
     plot(sim_costs(:,1),sim_costs(:,2));
     legend(["Sequential" , "Simultaneous"])
-    title("Window 2 Costs")
+    %title("Window 2 Costs")
     xlabel("Iterations")
     ylabel("Cost")
     saveas(gcf,strcat(setup,'_cost.png'))
@@ -303,9 +303,9 @@ if do_window_3
     plot(seq_costs(:,1),seq_costs(:,2));
     hold on;
     plot(sim_costs(:,1),sim_costs(:,2));
-    title("Costs")
+    %title("Costs")
     legend(["Sequential" , "Simultaneous"])
-    title("Window 3 Costs")
+    %title("Window 3 Costs")
     xlabel("Iterations")
     ylabel("Cost")
     saveas(gcf,strcat(setup,'_cost.png'))
